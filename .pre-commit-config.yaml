@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.28
+    hooks:
+      - id: uv-lock
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.14
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        types: [python]
+      - id: ruff-format
+        types: [python]
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        language: system
+        entry: bash -c "cd web && bun lint"
+        files: \.(js|ts|jsx|tsx|vue)$
+      - id: prettier
+        name: prettier
+        language: system
+        entry: bash -c "cd web && bun format"
+        files: \.(js|ts|jsx|tsx|vue)$
