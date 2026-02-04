@@ -1,8 +1,13 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { AuthProvider, type AuthContextState } from "@/context/AuthContext";
+import {
+  createRootRouteWithContext,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 const RootLayout = () => (
-  <>
+  <AuthProvider>
     <div className="p-2 flex gap-2">
       <Link to="/" className="[&.active]:font-bold">
         Home
@@ -18,7 +23,13 @@ const RootLayout = () => (
     <Outlet />
 
     <TanStackRouterDevtools />
-  </>
+  </AuthProvider>
 );
 
-export const Route = createRootRoute({ component: RootLayout });
+interface RootRouteContext {
+  auth: AuthContextState;
+}
+
+export const Route = createRootRouteWithContext<RootRouteContext>()({
+  component: RootLayout,
+});
