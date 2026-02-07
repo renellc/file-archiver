@@ -8,12 +8,14 @@ type AuthKey = {
 export interface AuthContextState {
   key?: AuthKey;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (credentials: { username: string; password: string }) => Promise<void>;
   logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextState>({
   isAuthenticated: false,
+  isLoading: false,
   login: async () => {},
   logout: () => {},
 });

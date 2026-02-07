@@ -1,4 +1,4 @@
-import { AuthProvider, type AuthContextState } from "@/context/AuthContext";
+import type { AuthContextState } from "@/context/AuthContext/context";
 import {
   createRootRouteWithContext,
   Link,
@@ -7,7 +7,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 const RootLayout = () => (
-  <AuthProvider>
+  <>
     <div className="p-2 flex gap-2">
       <Link to="/" className="[&.active]:font-bold">
         Home
@@ -23,7 +23,7 @@ const RootLayout = () => (
     <Outlet />
 
     <TanStackRouterDevtools />
-  </AuthProvider>
+  </>
 );
 
 interface RootRouteContext {

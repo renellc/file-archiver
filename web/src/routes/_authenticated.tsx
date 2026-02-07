@@ -1,15 +1,20 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { useAuthContext } from "@/context/AuthContext/context";
+import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated")({
-  beforeLoad: ({ context }) => {
-    if (!context.auth.isAuthenticated) {
-      throw redirect({
-        to: "/login",
-        search: {
-          redirect: location.href,
-        },
-      });
-    }
-  },
-  component: () => <Outlet />,
+  component: () => <RouteComponent />,
 });
+
+const RouteComponent = () => {
+  const auth = useAuthContext();
+
+  if (auth.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" search={{ redirect: location.href }} />;
+  }
+
+  return <Outlet />;
+};
