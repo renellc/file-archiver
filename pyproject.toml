@@ -6,6 +6,11 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "django>=6.0.1",
+    "django-cors-headers>=4.9.0",
+    "django-rest-knox>=5.0.2",
+    "djangorestframework>=3.16.1",
+    "pre-commit>=4.5.1",
+    "tool>=0.8.0",
 ]
 
 [dependency-groups]
