@@ -1,9 +1,10 @@
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { queryClient } from "./query";
 
 export const router = createRouter({
   routeTree,
-  context: { auth: undefined! },
+  context: { auth: undefined!, queryClient },
 });
 
 declare module "@tanstack/react-router" {

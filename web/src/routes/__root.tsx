@@ -1,4 +1,5 @@
 import type { AuthContextState } from "@/context/AuthContext/context";
+import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   Link,
@@ -12,10 +13,6 @@ const RootLayout = () => (
       <Link to="/" className="[&.active]:font-bold">
         Home
       </Link>
-
-      <Link to="/about" className="[&.active]:font-bold">
-        About
-      </Link>
     </div>
 
     <hr />
@@ -28,6 +25,7 @@ const RootLayout = () => (
 
 interface RootRouteContext {
   auth: AuthContextState;
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,9 +33,16 @@ function RouteComponent() {
   });
 
   const auth = useAuthContext();
+  const navigate = useNavigate();
 
   const onLoginSubmit = async (data: LoginFormSchema) => {
-    await auth.login(data);
+    try {
+      await auth.login(data);
+      navigate({ to: "/" });
+    } catch (err) {
+      console.error(err);
+      alert("Invalid credentials");
+    }
   };
 
   return (
