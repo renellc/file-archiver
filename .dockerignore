@@ -1,0 +1,10 @@
+node_modules
+build
+.git
+.dockerignore
+Dockerfile*
+docker-compose*
+.venv
+.ruff_cache
+__pycache__
+db.sqlite3

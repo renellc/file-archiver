@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    container_name: file-archiver-web
+    ports:
+      - "5173:80"
+    restart: unless-stopped
