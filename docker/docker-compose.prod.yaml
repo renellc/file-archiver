@@ -9,3 +9,38 @@ services:
     ports:
       - "5173:80"
     restart: unless-stopped
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: file-archiver-api
+    volumes:
+      - ../data:/app/data
+      - staticfiles:/app/staticfiles
+    environment:
+      - DJANGO_DB_PATH=/app/data/db.sqlite3
+    restart: unless-stopped
+    networks:
+      - file-archiver-network
+
+  api-nginx:
+    image: nginx:alpine
+    container_name: file-archiver-api-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ../conf/api.nginx.conf:/etc/nginx/nginx.conf:ro
+      - staticfiles:/usr/share/nginx/static:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - file-archiver-network
+
+networks:
+  file-archiver-network:
+    driver: bridge
+
+volumes:
+  staticfiles:

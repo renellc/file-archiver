@@ -9,6 +9,7 @@ dependencies = [
     "django-cors-headers>=4.9.0",
     "django-rest-knox>=5.0.2",
     "djangorestframework>=3.16.1",
+    "gunicorn>=21.2.0",
     "pre-commit>=4.5.1",
     "tool>=0.8.0",
 ]

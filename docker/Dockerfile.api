@@ -1,0 +1,61 @@
+FROM python:3.14-slim AS build
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+WORKDIR /app
+
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies using uv
+RUN uv sync --frozen
+
+# Copy application code
+COPY . .
+
+# Collect static files
+RUN uv run python manage.py collectstatic --noinput
+
+FROM python:3.14-slim AS production
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+WORKDIR /app
+
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies using uv (production only, no dev dependencies)
+RUN uv sync --frozen --no-dev
+
+# Copy application code
+COPY . .
+
+# Copy collected static files from build stage
+COPY --from=build /app/staticfiles /app/staticfiles
+
+# Create data directory for SQLite database
+RUN mkdir -p /app/data
+
+# Create entrypoint script to copy static files to volume
+RUN echo '#!/bin/sh\n\
+# Copy static files to volume if they exist in the image\n\
+if [ -d /app/staticfiles_build ] && [ "$(ls -A /app/staticfiles_build 2>/dev/null)" ]; then\n\
+  cp -r /app/staticfiles_build/* /app/staticfiles/ 2>/dev/null || true\n\
+fi\n\
+# Run collectstatic to ensure static files are up to date\n\
+uv run python manage.py collectstatic --noinput\n\
+# Start gunicorn\n\
+exec uv run gunicorn --bind 0.0.0.0:8000 --workers 4 filearchiver.wsgi:application\n\
+' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+# Copy static files to a separate location that won't be overridden by volume
+COPY --from=build /app/staticfiles /app/staticfiles_build
+
+# Expose port 8000 for gunicorn
+EXPOSE 8000
+
+# Use entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
